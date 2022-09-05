@@ -5,13 +5,13 @@
 1. In your CLI, git clone the repository
 
    ```
-
+   git clone https://github.com/Elliott-Chong/tech4good.git
    ```
 
 2. Next, cd into the directory
 
    ```
-   cd
+   cd tech4good
    ```
 
 3. Afterwards, install the node packages needed
@@ -32,7 +32,7 @@
    peerjs --port 3001
    ```
 
-6. To start the project, we will be using port 8081 as the port for the web server
+6. To start the project, open a new terminal and we will be using port 8081 as the port for the web server
 
    ```
    npm start
