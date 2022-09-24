@@ -3,6 +3,7 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const { v4: uuidV4 } = require("uuid");
+const PORT = 8081;
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -25,4 +26,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(8081);
+server.listen(process.env.PORT || PORT);
+console.log(
+  `Web server is listening at http://localhost:${process.env.PORT || PORT}/`
+);
