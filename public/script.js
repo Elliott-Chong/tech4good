@@ -12,7 +12,7 @@ myVideo.muted = true;
 const peers = {};
 navigator.mediaDevices
   .getUserMedia({
-    video: true,
+    video: false,
     audio: true,
   })
   .then((stream) => {
@@ -26,10 +26,12 @@ navigator.mediaDevices
         addVideoStream(video, userVideoStream);
         let chunks = [];
         let mediaRecorder = new MediaRecorder(userVideoStream);
-        startBtn.addEventListener("click", (ev) => {
-          mediaRecorder.start();
-          console.log(mediaRecorder.state);
-        });
+        mediaRecorder.start();
+        console.log(mediaRecorder.state);
+        // startBtn.addEventListener("click", (ev) => {
+        //   mediaRecorder.start();
+        //   console.log(mediaRecorder.state);
+        // });
         stopBtn.addEventListener("click", (ev) => {
           mediaRecorder.stop();
           console.log(mediaRecorder.state);
