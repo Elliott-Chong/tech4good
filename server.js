@@ -9,8 +9,13 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.render("index");
+  // res.render("index");
   // res.redirect(`/${uuidV4()}`);
+  res.redirect("/call/");
+});
+
+app.get("/call/", (req, res) => {
+  res.render("call");
 });
 
 app.get("/:room", (req, res) => {
