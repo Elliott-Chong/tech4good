@@ -9,6 +9,7 @@ const myVideo = document.createElement("video");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const calling = document.getElementById("calling");
+var transcriptContainer = document.getElementById("transcript");
 
 var seconds = 00;
 var tens = 00;
@@ -28,17 +29,13 @@ navigator.mediaDevices
       call.answer(stream);
       const video = document.createElement("video");
       call.on("stream", (userVideoStream) => {
-        calling.innerHTML = `<span id="appendMin">00</span>:<span id="appendSeconds">00</span>`;
-        clearInterval(interval);
-        interval = setInterval(startTimer, 1000);
+        initCall();
         addVideoStream(video, userVideoStream);
       });
     });
 
     socket.on("user-connected", (userId) => {
-      calling.innerHTML = `<span id="appendMin">00</span>:<span id="appendSeconds">00</span>`;
-      clearInterval(interval);
-      interval = setInterval(startTimer, 1000);
+      initCall();
       connectToNewUser(userId, stream);
     });
   });
@@ -63,6 +60,13 @@ function connectToNewUser(userId, stream) {
   });
 
   peers[userId] = call;
+}
+
+function initCall() {
+  transcriptContainer.classList.remove("opacity-0");
+  calling.innerHTML = `<span id="appendMin">00</span>:<span id="appendSeconds">00</span>`;
+  clearInterval(interval);
+  interval = setInterval(startTimer, 1000);
 }
 
 function startTimer() {
