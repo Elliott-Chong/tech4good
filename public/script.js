@@ -8,6 +8,12 @@ const myPeer = new Peer(undefined, {
 const myVideo = document.createElement("video");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
+const calling = document.getElementById("calling");
+
+var seconds = 00;
+var tens = 00;
+var interval;
+
 myVideo.muted = true;
 const peers = {};
 navigator.mediaDevices
@@ -19,38 +25,20 @@ navigator.mediaDevices
     addVideoStream(myVideo, stream);
 
     myPeer.on("call", (call) => {
-      console.log(call);
       call.answer(stream);
       const video = document.createElement("video");
       call.on("stream", (userVideoStream) => {
+        calling.innerHTML = `<span id="appendMin">00</span>:<span id="appendSeconds">00</span>`;
+        clearInterval(interval);
+        interval = setInterval(startTimer, 1000);
         addVideoStream(video, userVideoStream);
-        let chunks = [];
-        let mediaRecorder = new MediaRecorder(userVideoStream);
-        mediaRecorder.start();
-        console.log(mediaRecorder.state);
-        // startBtn.addEventListener("click", (ev) => {
-        //   mediaRecorder.start();
-        //   console.log(mediaRecorder.state);
-        // });
-        stopBtn.addEventListener("click", (ev) => {
-          mediaRecorder.stop();
-          console.log(mediaRecorder.state);
-        });
-        mediaRecorder.ondataavailable = (ev) => {
-          console.log(ev.data);
-          chunks.push(ev.data);
-          console.log(chunks);
-        };
-        mediaRecorder.onstop = (ev) => {
-          let blob = new Blob(chunks, { type: "video/mp4" });
-          chunks = [];
-          let videoURL = window.URL.createObjectURL(blob);
-          console.log(videoURL);
-        };
       });
     });
 
     socket.on("user-connected", (userId) => {
+      calling.innerHTML = `<span id="appendMin">00</span>:<span id="appendSeconds">00</span>`;
+      clearInterval(interval);
+      interval = setInterval(startTimer, 1000);
       connectToNewUser(userId, stream);
     });
   });
@@ -77,10 +65,47 @@ function connectToNewUser(userId, stream) {
   peers[userId] = call;
 }
 
+function startTimer() {
+  var appendMin = document.getElementById("appendMin");
+  var appendSeconds = document.getElementById("appendSeconds");
+  tens++;
+  if (tens <= 9) {
+    appendSeconds.innerHTML = "0" + tens;
+  }
+  if (tens > 9) {
+    appendSeconds.innerHTML = tens;
+  }
+  if (tens > 60) {
+    console.log("seconds");
+    seconds++;
+    appendMin.innerHTML = "0" + seconds;
+    tens = 0;
+    appendSeconds.innerHTML = "0" + 0;
+  }
+  if (seconds > 9) {
+    appendMin.innerHTML = seconds;
+  }
+}
+
 function addVideoStream(video, stream) {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
   });
   videoGrid.append(video);
+  let chunks = [];
+  let mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.start();
+  console.log(mediaRecorder.state);
+  mediaRecorder.ondataavailable = (ev) => {
+    console.log(ev.data);
+    chunks.push(ev.data);
+    console.log(chunks);
+  };
+  mediaRecorder.onstop = (ev) => {
+    let blob = new Blob(chunks, { type: "video/mp4" });
+    chunks = [];
+    let videoURL = window.URL.createObjectURL(blob);
+    console.log(videoURL);
+  };
 }
