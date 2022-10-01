@@ -1,10 +1,43 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
+let socketclientid;
 // const myPeer = new Peer(undefined, {
 //   // host: "http://elliottchong.com/", // main pov
 //   // host: "/", // local testing
 //   // port: "3001",
 // });
+
+let speechRec = new p5.SpeechRec("en-US", gotSpeech);
+let transcriptDiv = document.getElementById("transcript");
+
+let continuous = true;
+let interim = true;
+
+speechRec.start(continuous, interim);
+
+function gotSpeech() {
+  if (speechRec.resultValue) {
+    socket.emit("message", {
+      message: speechRec.resultString,
+      roomId: ROOM_ID,
+    });
+  }
+}
+
+socket.on("clientid", (id) => {
+  socketclientid = id;
+});
+
+socket.on("message", (payload) => {
+  const { message, user } = payload;
+  let d = document.createElement("div");
+  d.textContent = message;
+  d.classList.add("bubble");
+  if (user.toString() == socketclientid.toString()) d.classList.add("me");
+  else d.classList.add("other");
+  transcriptDiv.appendChild(d);
+  transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
+});
 
 const myPeer = new Peer(undefined);
 const myVideo = document.createElement("video");

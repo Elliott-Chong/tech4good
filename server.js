@@ -18,12 +18,18 @@ app.get("/:room", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+  socket.emit("clientid", socket.id);
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
     socket.to(roomId).broadcast.emit("user-connected", userId);
     socket.on("disconnect", () => {
       socket.to(roomId).broadcast.emit("user-disconnected", userId);
     });
+  });
+
+  socket.on("message", (payload) => {
+    const { roomId, message } = payload;
+    io.to(roomId).emit("message", { user: socket.id, message });
   });
 });
 
