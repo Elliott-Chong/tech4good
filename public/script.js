@@ -1,10 +1,12 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
-const myPeer = new Peer(undefined, {
-  // host: "http://elliottchong.com/", // main pov
-  host: "/", // local testing
-  port: "3001",
-});
+// const myPeer = new Peer(undefined, {
+//   // host: "http://elliottchong.com/", // main pov
+//   // host: "/", // local testing
+//   // port: "3001",
+// });
+
+const myPeer = new Peer(undefined);
 const myVideo = document.createElement("video");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
