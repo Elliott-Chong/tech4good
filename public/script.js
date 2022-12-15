@@ -1,11 +1,11 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 let socketclientid;
-// const myPeer = new Peer(undefined, {
-//   // host: "http://elliottchong.com/", // main pov
-//   // host: "/", // local testing
-//   // port: "3001",
-// });
+const myPeer = new Peer(undefined, {
+  //   // host: "http://elliottchong.com/", // main pov
+  host: "/", // local testing
+  port: "3001",
+});
 
 let speechRec = new p5.SpeechRec("en-US", gotSpeech);
 let transcriptDiv = document.getElementById("transcript");
@@ -16,7 +16,8 @@ let interim = true;
 speechRec.start(continuous, interim);
 
 function gotSpeech() {
-  if (speechRec.resultValue) {
+  console.log(speechRec);
+  if (speechRec.resultValue && speechRec.resultConfidence > 0.7) {
     socket.emit("message", {
       message: speechRec.resultString,
       roomId: ROOM_ID,
@@ -36,10 +37,10 @@ socket.on("message", (payload) => {
   if (user.toString() == socketclientid.toString()) d.classList.add("me");
   else d.classList.add("other");
   transcriptDiv.appendChild(d);
-  transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
+  // transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
 });
 
-const myPeer = new Peer(undefined);
+// const myPeer = new Peer(undefined);
 const myVideo = document.createElement("video");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
