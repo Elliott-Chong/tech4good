@@ -1,11 +1,12 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 let socketclientid;
-const myPeer = new Peer(undefined, {
-  //   // host: "http://elliottchong.com/", // main pov
-  host: "/", // local testing
-  port: "3001",
-});
+const myPeer = new Peer();
+// const myPeer = new Peer(undefined, {
+//   // //   // host: "http://elliottchong.com/", // main pov
+//   // host: "/", // local testing
+//   // port: "3001",
+// });
 
 let speechRec = new p5.SpeechRec("en-US", gotSpeech);
 let transcriptDiv = document.getElementById("transcript");
